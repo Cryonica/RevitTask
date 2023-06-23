@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>Command RevitTask</Text>
+    <Description>Some description for RevitTask</Description>
+    <Assembly>RevitTask.dll</Assembly>
+    <FullClassName>RevitTask.Command</FullClassName>
+    <ClientId>aa0427cf-323e-4df7-8430-fda0eead5c5c</ClientId>
+    <VendorId>com.typepad.thebuildingcoder</VendorId>
+    <VendorDescription>The Building Coder, http://thebuildingcoder.typepad.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>Application RevitTask</Name>
+    <Assembly>RevitTask.dll</Assembly>
+    <FullClassName>RevitTask.App</FullClassName>
+    <ClientId>063e9605-31cb-4f42-a4a6-5e5f1c523059</ClientId>
+    <VendorId>com.typepad.thebuildingcoder</VendorId>
+    <VendorDescription>The Building Coder, http://thebuildingcoder.typepad.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>

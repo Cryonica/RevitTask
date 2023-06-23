@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RevitDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="AK">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ChapterId" Type="Int32" />
+    <Property Name="FamilyType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FamilyName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FamilyId" Type="Int32" Nullable="false" />
+    <Property Name="TaskId" Type="Int32" />
+    <Property Name="GGP_Задание" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ADSK_Марка" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ADSK_Напряжение" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ADSK_Номинальная_мощность" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="GGP_Тип_системы" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ADSK_Количество_фаз" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ADSK_Коэффицент_мощности" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="GGP_Примечание_МногострочныйТекст" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Chapter" Relationship="Self.FK__AK__ChapterId__35BCFE0A" FromRole="AK" ToRole="Chapter" />
+    <NavigationProperty Name="Task" Relationship="Self.FK__AK__TaskId__36B12243" FromRole="AK" ToRole="Task" />
+  </EntityType>
+  <EntityType Name="Chapter">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ChapterName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="AK" Relationship="Self.FK__AK__ChapterId__35BCFE0A" FromRole="Chapter" ToRole="AK" />
+    <NavigationProperty Name="Task" Relationship="Self.FK__Task__ChapterId__32E0915F" FromRole="Chapter" ToRole="Task" />
+  </EntityType>
+  <EntityType Name="Task">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ChapterId" Type="Int32" />
+    <Property Name="TaskTime" Type="DateTime" />
+    <Property Name="TaskTimeTastamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+    <NavigationProperty Name="AK" Relationship="Self.FK__AK__TaskId__36B12243" FromRole="Task" ToRole="AK" />
+    <NavigationProperty Name="Chapter" Relationship="Self.FK__Task__ChapterId__32E0915F" FromRole="Task" ToRole="Chapter" />
+  </EntityType>
+  <Association Name="FK__AK__ChapterId__35BCFE0A">
+    <End Role="Chapter" Type="Self.Chapter" Multiplicity="0..1" />
+    <End Role="AK" Type="Self.AK" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Chapter">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AK">
+        <PropertyRef Name="ChapterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__AK__TaskId__36B12243">
+    <End Role="Task" Type="Self.Task" Multiplicity="0..1" />
+    <End Role="AK" Type="Self.AK" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Task">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AK">
+        <PropertyRef Name="TaskId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Task__ChapterId__32E0915F">
+    <End Role="Chapter" Type="Self.Chapter" Multiplicity="0..1" />
+    <End Role="Task" Type="Self.Task" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Chapter">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Task">
+        <PropertyRef Name="ChapterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RevitDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="AK" EntityType="Self.AK" />
+    <EntitySet Name="Chapter" EntityType="Self.Chapter" />
+    <EntitySet Name="Task" EntityType="Self.Task" />
+    <AssociationSet Name="FK__AK__ChapterId__35BCFE0A" Association="Self.FK__AK__ChapterId__35BCFE0A">
+      <End Role="Chapter" EntitySet="Chapter" />
+      <End Role="AK" EntitySet="AK" />
+    </AssociationSet>
+    <AssociationSet Name="FK__AK__TaskId__36B12243" Association="Self.FK__AK__TaskId__36B12243">
+      <End Role="Task" EntitySet="Task" />
+      <End Role="AK" EntitySet="AK" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Task__ChapterId__32E0915F" Association="Self.FK__Task__ChapterId__32E0915F">
+      <End Role="Chapter" EntitySet="Chapter" />
+      <End Role="Task" EntitySet="Task" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

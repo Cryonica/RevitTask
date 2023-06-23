@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Хранилище RevitDBModelContainer" CdmEntityContainer="RevitDBEntities">
+    <EntitySetMapping Name="AK">
+      <EntityTypeMapping TypeName="RevitDBModel.AK">
+        <MappingFragment StoreEntitySet="AK">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ChapterId" ColumnName="ChapterId" />
+          <ScalarProperty Name="FamilyType" ColumnName="FamilyType" />
+          <ScalarProperty Name="FamilyName" ColumnName="FamilyName" />
+          <ScalarProperty Name="FamilyId" ColumnName="FamilyId" />
+          <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+          <ScalarProperty Name="GGP_Задание" ColumnName="GGP_Задание" />
+          <ScalarProperty Name="ADSK_Марка" ColumnName="ADSK_Марка" />
+          <ScalarProperty Name="ADSK_Напряжение" ColumnName="ADSK_Напряжение" />
+          <ScalarProperty Name="ADSK_Номинальная_мощность" ColumnName="ADSK_Номинальная_мощность" />
+          <ScalarProperty Name="GGP_Тип_системы" ColumnName="GGP_Тип_системы" />
+          <ScalarProperty Name="ADSK_Количество_фаз" ColumnName="ADSK_Количество_фаз" />
+          <ScalarProperty Name="ADSK_Коэффицент_мощности" ColumnName="ADSK_Коэффицент_мощности" />
+          <ScalarProperty Name="GGP_Примечание_МногострочныйТекст" ColumnName="GGP_Примечание_МногострочныйТекст" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Chapter">
+      <EntityTypeMapping TypeName="RevitDBModel.Chapter">
+        <MappingFragment StoreEntitySet="Chapter">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ChapterName" ColumnName="ChapterName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Task">
+      <EntityTypeMapping TypeName="RevitDBModel.Task">
+        <MappingFragment StoreEntitySet="Task">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ChapterId" ColumnName="ChapterId" />
+          <ScalarProperty Name="TaskTime" ColumnName="TaskTime" />
+          <ScalarProperty Name="TaskTimeTastamp" ColumnName="TaskTimeTastamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
