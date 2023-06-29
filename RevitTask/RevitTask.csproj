@@ -98,6 +98,8 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="Controller\BoolToVisibilityConverter.cs" />
+    <Compile Include="Controller\ToggleDetailsCommand.cs" />
     <Compile Include="MainForm.xaml.cs">
       <DependentUpon>MainForm.xaml</DependentUpon>
     </Compile>
@@ -110,6 +112,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\checklist.png" />
+    <Resource Include="Images\bell.png" />
+    <Resource Include="Images\user %283%29.png" />
     <Content Include="RevitTask.addin" />
   </ItemGroup>
   <ItemGroup>

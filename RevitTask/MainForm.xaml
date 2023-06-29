@@ -5,10 +5,341 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RevitTask"
              xmlns:models="clr-namespace:RevitTask.Model"
+             xmlns:controllers="clr-namespace:RevitTask.Controller"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Width="1600" Height="900" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <controllers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <Style x:Key="TaskCardStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="DodgerBlue"/>
+                        <Setter Property="BorderThickness" Value="1.5"/>
+                    </Trigger>
+                    <DataTrigger Binding="{Binding ElementName=DetailsButton, Path=IsChecked}" >
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ImageButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="ButtonBorder" Background="#FFEBF5F7" BorderBrush="Gray" BorderThickness="1" CornerRadius="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Stretch="Uniform" Width="30" Height="30" Margin="10,5,5,5" />
+                                    <ContentPresenter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="ButtonBorder" Property="Background" Value="LightGray" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+
+            <Style x:Key="RoundedButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="ButtonBorder" Background="#8259F6" BorderBrush="Gray" BorderThickness="1" CornerRadius="10">
+                                <TextBlock x:Name="ButtonText" 
+                                           Text="{TemplateBinding Content}" 
+                                           FontSize="{TemplateBinding FontSize}"
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center">
+                                    <TextBlock.RenderTransform>
+                                        <ScaleTransform x:Name="TextScaleTransform" ScaleX="1" ScaleY="1" CenterX="0.5" CenterY="0.5" />
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="TextScaleTransform" Storyboard.TargetProperty="ScaleX" To="1.1" Duration="0:0:0.2" />
+                                                <DoubleAnimation Storyboard.TargetName="TextScaleTransform" Storyboard.TargetProperty="ScaleY" To="1.1" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="TextScaleTransform" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2" />
+                                                <DoubleAnimation Storyboard.TargetName="TextScaleTransform" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                    <Setter TargetName="ButtonBorder" Property="Background" Value="#FF926EF6" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="White" />
+
+            </Style>
+
+            <DataTemplate x:Key="TaskCardTemplateWithContext" DataType="{x:Type models:Task}">
+                <Border Style="{StaticResource TaskCardStyle}"
+                        MouseMove="Border_MouseMove">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <TextBlock 
+                                Text="{Binding ChapterId}" 
+                                FontWeight="Bold" 
+                                Margin="0 0 5 0" />
+                            <Image Source="Images\bell.png" 
+                                   Width="16" Height="16" Visibility="{Binding HasAttachments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                        </StackPanel>
+
+
+                        <ToggleButton x:Name="DetailsButton" 
+                            Content="Показать детали" 
+                            HorizontalAlignment="Left"
+                            IsChecked="False"
+                            Margin="0 5 0 0" Grid.Row="1"/>
+
+
+
+                        <Border x:Name="DetailsPanel" 
+                            Visibility="{Binding ElementName=DetailsButton, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Grid.Row="2">
+
+                            <TextBlock 
+                                Text="Детали задания" 
+                                FontWeight="Bold" 
+                                Margin="0 0 5 0" />
+                        </Border>
+                    </Grid>
+                    <Border.ContextMenu>
+                        
+                        <ContextMenu>
+                            <ContextMenu.Resources>
+                                <Style TargetType="Separator">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </ContextMenu.Resources>
+                            
+                            <MenuItem Click="MenuItem_Click">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="Images/bell.png" Width="16" Height="16" Margin="0 0 5 0"/>
+                                        <TextBlock Text="Удалить"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Border.ContextMenu>
+
+                </Border>
+                
+            </DataTemplate>
+            <DataTemplate x:Key="TaskCardTemplate" DataType="{x:Type models:Task}">
+                <Border Style="{StaticResource TaskCardStyle}"
+                        MouseMove="Border_MouseMove">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <TextBlock 
+                                Text="{Binding ChapterId}" 
+                                FontWeight="Bold" 
+                                Margin="0 0 5 0" />
+                            <Image Source="Images\bell.png" 
+                                   Width="16" Height="16" Visibility="{Binding HasAttachments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                        </StackPanel>
+
+
+                        <ToggleButton x:Name="DetailsButton" 
+                            Content="Показать детали" 
+                            HorizontalAlignment="Left"
+                            IsChecked="False"
+                            Margin="0 5 0 0" Grid.Row="1"/>
+
+
+
+                        <Border x:Name="DetailsPanel" 
+                            Visibility="{Binding ElementName=DetailsButton, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Grid.Row="2">
+
+                            <TextBlock 
+                                Text="Детали задания" 
+                                FontWeight="Bold" 
+                                Margin="0 0 5 0" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+            </DataTemplate>
+
+        </ResourceDictionary>
+
+    </Window.Resources>
+
     <Grid>
-       
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,8,0" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Images\user (3).png" Width="52" Height="52" Margin="10,10,0,0" VerticalAlignment="Center"/>
+                <Label Name="Labelname" Content="UserName"
+                       VerticalAlignment="Center"
+                       Margin="10,10,0,0"
+                       FontSize="16" FontWeight="Bold"/>
+                
+
+
+            </StackPanel>
+            
+            <Border Height="1" Background="Gray" Margin="10,10,0,0" />
+            <Button 
+                Style="{StaticResource RoundedButton}"
+                Click="Button_Click"
+                Tag="Images\bell.png"
+                Width="200" 
+                Height="40" 
+                Content="Новое задание" 
+                FontSize="16"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                Margin="10,10,0,0">
+
+            </Button>
+            
+            <Button 
+                Style="{StaticResource ImageButton}"
+                Tag="Images\bell.png"
+                Width="200" 
+                Height="40" 
+                Content="Оповещения" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                Margin="10,10,0,0">
+                
+            </Button>
+            <Button 
+                Style="{StaticResource ImageButton}"
+                Tag="Images\checklist.png"
+                Width="200" 
+                Height="40" 
+                Content="Принятые задания" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                Margin="10,10,0,0">
+
+            </Button>
+            
+            
+
+        </StackPanel>
+        <Border Grid.Column="1" Width="1" Background="Gray" Margin="0,10,10,0" />
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                
+            </Grid.RowDefinitions>
+            <Border Background="LightGray" Padding="10" Grid.Row="0" >
+                <TextBlock Text="ToDo" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+            </Border>
+            
+
+            
+            <ScrollViewer  
+                Margin="0,40,0,0" 
+                Grid.Row="0" 
+                VerticalScrollBarVisibility="Auto"
+                MaxHeight="780"
+                Height="auto">
+                <StackPanel x:Name="TodoStackPanel" AllowDrop="True" DragEnter="StackPanel_DragEnter" Drop="StackPanel_Drop">
+                    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=TaskList1}">
+                        <!-- Остальной код для отображения элементов задач -->
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentControl Content="{Binding}"
+                                            ContentTemplate="{StaticResource TaskCardTemplateWithContext }"/>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                </StackPanel>
+                
+            </ScrollViewer>
+            
+        </Grid>
+        <Grid Grid.Column="3" Margin="10,0,0,0" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+
+            </Grid.RowDefinitions>
+            <Border Background="LightGray" Padding="10" Grid.Row="0">
+                <TextBlock Text="ToDo" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+            </Border>
+            <Border Background="LightGray" Padding="10" Grid.Column="1">
+                <TextBlock Text="Doing" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+            </Border>
+
+            <!-- Кнопка "Создать карточку" -->
+            <Button Grid.Row="1" Grid.Column="0" Content="Создать карточку" Click="Button_Click" HorizontalAlignment="Center"/>
+            
+
+            <ScrollViewer Grid.Row="0" Grid.Column="1"  Margin="0,40,0,0">
+                <StackPanel x:Name="DoingStackPanel" Grid.Column="1" AllowDrop="True" DragEnter="StackPanel_DragEnter" Drop="DoingStackPanel_Drop">
+                    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=TaskList2}">
+                        <!-- Остальной код для отображения элементов задач -->
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentControl Content="{Binding}"
+                                            ContentTemplate="{StaticResource TaskCardTemplate }"/>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
 
     </Grid>
 </Window>

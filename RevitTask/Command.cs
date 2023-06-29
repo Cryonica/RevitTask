@@ -20,27 +20,16 @@ namespace RevitTask
     [Transaction(TransactionMode.Manual)]
     public class Command : IExternalCommand
     {
-        public Result Execute(
-          ExternalCommandData commandData,
-          ref string message,
-          ElementSet elements)
+        public Result Execute(ExternalCommandData commandData,ref string message,ElementSet elements)
         {
-           MainForm form = new MainForm();
+            UIApplication uiapp = commandData.Application;
+
+            MainForm form = new MainForm();
+            form.SetRevitLinks(uiapp);
             form.ShowDialog();
 
 
-
-
-
-
-
-            using (Model1 db = new Model1())
-            {
-                
-                var vv = db.Chapter.Select(e => e.ChapterName).ToList();
-            }
-
-            UIApplication uiapp = commandData.Application;
+            
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Application app = uiapp.Application;
             Document doc = uidoc.Document;
