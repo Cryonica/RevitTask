@@ -63,6 +63,9 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Autodesk.IFC.Export.UI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\AddIns\IFCExporterUI\Autodesk.IFC.Export.UI.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -84,10 +87,13 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="UIFramework, Version=24.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\Revit_All_Main_Versions_API_x64.2024.0.0\lib\net48\UIFramework.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -105,11 +111,13 @@
     </Compile>
     <Compile Include="Model\AK.cs" />
     <Compile Include="Model\Chapter.cs" />
-    <Compile Include="Model\Item.cs" />
     <Compile Include="Model\Model1.cs" />
+    <Compile Include="Model\ServerFilesModel.cs" />
     <Compile Include="Model\sysdiagrams.cs" />
     <Compile Include="Model\Task.cs" />
+    <Compile Include="Model\TaskFiles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\VirtualToggleButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\checklist.png" />

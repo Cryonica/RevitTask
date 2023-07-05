@@ -6,12 +6,17 @@
              xmlns:local="clr-namespace:RevitTask"
              xmlns:models="clr-namespace:RevitTask.Model"
              xmlns:controllers="clr-namespace:RevitTask.Controller"
+             xmlns:dw="clr-namespace:RevitTask.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Width="1600" Height="900" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 
 
     <Window.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
             <controllers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <Style x:Key="TaskCardStyle" TargetType="Border">
                 <Setter Property="Background" Value="White"/>
@@ -101,6 +106,74 @@
                 <Setter Property="Foreground" Value="White" />
 
             </Style>
+            <Style x:Key="TabItemStyle" TargetType="TabItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Grid >
+                                <Border x:Name="Border" Margin="0,0,4,0" Padding="5">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{TemplateBinding Header}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="24"
+                                               Foreground="Black" />
+                                        
+                                    </Grid>
+                                </Border>
+
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <!-- Selected color -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <!-- <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="White"/>-->
+                                    <Setter Property="Panel.ZIndex" Value="100" />
+                                    <Setter TargetName="Border" Property="Background" Value="#FFF57E7E" />
+                                </Trigger>
+
+                                <!-- Not Selected color -->
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter TargetName="Border" Property="Background" Value="#FFA182F6" />
+                                </Trigger>
+
+                                <!-- Tab mouseovers-->
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                        <Condition Property="IsSelected" Value="False"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="Border" Property="Background" Value="#FFC4B2F6" />
+                                </MultiTrigger>
+
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="True" />
+                <Setter Property="IsSelected" Value="{Binding IsInitiallySelected, Mode=OneTime}" />
+                <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
+                <Setter Property="dw:VirtualToggleButton.IsVirtualToggleButton" Value="True"/>
+                <Setter Property="dw:VirtualToggleButton.IsChecked" Value="{Binding IsChecked}" />
+            </Style>
+            <HierarchicalDataTemplate x:Key="CheckBoxItemTemplate"
+                                ItemsSource="{Binding Children, Mode=OneTime}">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox
+                      Focusable="False" 
+                      IsChecked="{Binding IsChecked}" 
+                      VerticalAlignment="Center"/>
+                    <ContentPresenter 
+                        Content="{Binding Name, Mode=OneTime}" 
+                        Margin="2,0"/>
+                </StackPanel>
+            </HierarchicalDataTemplate>
 
             <DataTemplate x:Key="TaskCardTemplateWithContext" DataType="{x:Type models:Task}">
                 <Border Style="{StaticResource TaskCardStyle}"
@@ -157,6 +230,16 @@
                                         <TextBlock Text="Удалить"/>
                                     </StackPanel>
                                 </MenuItem.Header>
+                                
+                            </MenuItem>
+                            <MenuItem Click="MenuItem_Click_1">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="Images/bell.png" Width="16" Height="16" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Считать"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+
                             </MenuItem>
                         </ContextMenu>
                     </Border.ContextMenu>
@@ -206,18 +289,18 @@
                 </Border>
 
             </DataTemplate>
-
         </ResourceDictionary>
 
     </Window.Resources>
 
     <Grid>
         
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="5*"/>
+            
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,8,0" >
             <StackPanel Orientation="Horizontal">
@@ -257,7 +340,7 @@
                 Margin="10,10,0,0">
                 
             </Button>
-            <Button 
+            <Button x:Name="TakeTaskButton" Click="TakeTaskButton_Click"
                 Style="{StaticResource ImageButton}"
                 Tag="Images\checklist.png"
                 Width="200" 
@@ -273,73 +356,111 @@
 
         </StackPanel>
         <Border Grid.Column="1" Width="1" Background="Gray" Margin="0,10,10,0" />
-        <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                
-            </Grid.RowDefinitions>
-            <Border Background="LightGray" Padding="10" Grid.Row="0" >
-                <TextBlock Text="ToDo" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-            </Border>
-            
+        <TabControl Grid.Column="2">
+            <TabItem Header="Tab 1" Style="{StaticResource TabItemStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
 
-            
-            <ScrollViewer  
-                Margin="0,40,0,0" 
-                Grid.Row="0" 
-                VerticalScrollBarVisibility="Auto"
-                MaxHeight="780"
-                Height="auto">
-                <StackPanel x:Name="TodoStackPanel" AllowDrop="True" DragEnter="StackPanel_DragEnter" Drop="StackPanel_Drop">
-                    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=TaskList1}">
-                        <!-- Остальной код для отображения элементов задач -->
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentControl Content="{Binding}"
+                        </Grid.RowDefinitions>
+                        <Border Background="LightGray" Padding="10" Grid.Row="0" >
+                            <TextBlock Text="ToDo" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </Border>
+
+                        <ScrollViewer  
+                            Margin="0,40,0,0" 
+                            Grid.Row="0" 
+                            VerticalScrollBarVisibility="Auto"
+                            MaxHeight="780"
+                            Height="auto">
+                            <StackPanel x:Name="TodoStackPanel" AllowDrop="True" DragEnter="StackPanel_DragEnter" Drop="StackPanel_Drop">
+                                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=TaskList1}">
+                                    <!-- Остальной код для отображения элементов задач -->
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Content="{Binding}"
                                             ContentTemplate="{StaticResource TaskCardTemplateWithContext }"/>
 
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    
-                </StackPanel>
-                
-            </ScrollViewer>
-            
-        </Grid>
-        <Grid Grid.Column="3" Margin="10,0,0,0" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-            </Grid.RowDefinitions>
-            <Border Background="LightGray" Padding="10" Grid.Row="0">
-                <TextBlock Text="ToDo" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-            </Border>
-            <Border Background="LightGray" Padding="10" Grid.Column="1">
-                <TextBlock Text="Doing" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-            </Border>
+                            </StackPanel>
 
-            <!-- Кнопка "Создать карточку" -->
-            <Button Grid.Row="1" Grid.Column="0" Content="Создать карточку" Click="Button_Click" HorizontalAlignment="Center"/>
-            
+                        </ScrollViewer>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="1"  Margin="0,40,0,0">
-                <StackPanel x:Name="DoingStackPanel" Grid.Column="1" AllowDrop="True" DragEnter="StackPanel_DragEnter" Drop="DoingStackPanel_Drop">
-                    <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=TaskList2}">
-                        <!-- Остальной код для отображения элементов задач -->
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentControl Content="{Binding}"
+                    </Grid>
+                    <Grid Grid.Column="1" Margin="10,0,0,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+
+                        </Grid.RowDefinitions>
+                        <Border Background="LightGray" Padding="10" Grid.Column="1">
+                            <TextBlock Text="Doing" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Кнопка "Создать карточку" -->
+                        
+
+
+                        <ScrollViewer 
+                            Margin="0,40,0,0" 
+                            Grid.Row="0" 
+                            VerticalScrollBarVisibility="Auto"
+                            MaxHeight="780"
+                            Height="auto">
+                            <StackPanel x:Name="DoingStackPanel" Grid.Column="1" AllowDrop="True" DragEnter="StackPanel_DragEnter" Drop="DoingStackPanel_Drop">
+                                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=TaskList2}">
+                                    <!-- Остальной код для отображения элементов задач -->
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Content="{Binding}"
                                             ContentTemplate="{StaticResource TaskCardTemplate }"/>
 
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </ScrollViewer>
-        </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                    <DockPanel Grid.Column="2">
+                        <TextBox x:Name="FolderName"
+                                 DockPanel.Dock="Top"/>
+                        <Button 
+                            DockPanel.Dock="Bottom" 
+                            Command="Undo"
+                            Content="Отменить выделение" 
+                            HorizontalAlignment="Center"
+                            Margin="0,2"
+                            Padding="8,0"/>
+
+                        <TreeView x:Name="tree"
+                                  ItemContainerStyle="{StaticResource TreeViewItemStyle}"
+                                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainForm}}, Path=ServerFiles1}"
+                                  ItemTemplate="{StaticResource CheckBoxItemTemplate}"/>
+                    </DockPanel>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tab 2" Style="{StaticResource TabItemStyle}" >
+                <!-- Содержимое второй закладки -->
+            </TabItem>
+            <TabItem Header="Tab 3" Style="{StaticResource TabItemStyle}">
+                <!-- Содержимое третьей закладки -->
+            </TabItem>
+        </TabControl>
+        
+        
+        
 
     </Grid>
 </Window>

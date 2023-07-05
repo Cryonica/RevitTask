@@ -16,6 +16,7 @@ namespace RevitTask.Model
         public virtual DbSet<Chapter> Chapter { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Task> Task { get; set; }
+        public virtual DbSet<TaskFiles> TaskFiles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -66,6 +67,15 @@ namespace RevitTask.Model
             modelBuilder.Entity<Task>()
                 .Property(e => e.TaskTimeTastamp)
                 .IsFixedLength();
+
+            modelBuilder.Entity<Task>()
+                .Property(e => e.Comment)
+                .IsUnicode(false);
+
+           
+            modelBuilder.Entity<TaskFiles>()
+                .Property(e => e.FileName)
+                .IsUnicode(false);
         }
     }
 }

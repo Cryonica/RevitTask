@@ -17,3 +17,17 @@ C:\Users\user\source\repos\RevitTask\RevitTask\obj\Debug\RevitTask_MarkupCompile
 C:\Users\user\source\repos\RevitTask\RevitTask\obj\Debug\MainForm.baml
 C:\Users\user\source\repos\RevitTask\RevitTask\obj\Debug\RevitTask.g.resources
 C:\Users\user\source\repos\RevitTask\RevitTask\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\Autodesk.IFC.Export.UI.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\cs-CZ\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\de-DE\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\en-US\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\es-ES\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\fr-FR\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\it-IT\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\ja-JP\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\ko-KR\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\pl-PL\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\pt-BR\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\ru-RU\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\zh-CN\Autodesk.IFC.Export.UI.resources.dll
+C:\Users\user\source\repos\RevitTask\RevitTask\bin\Debug\zh-TW\Autodesk.IFC.Export.UI.resources.dll
