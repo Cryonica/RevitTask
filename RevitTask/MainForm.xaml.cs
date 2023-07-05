@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using static UIFramework.SemanticTree;
@@ -420,17 +421,9 @@ namespace RevitTask
             string serveerpath = FolderName.Text;
             var root = ServerFiles1.First();
             root.Children.Clear();
-            System.Threading.Tasks.Task.Run(() =>
-            {
-                AddContents(ServerFiles1.FirstOrDefault(), serveerpath);
-            });
+            AddContents(ServerFiles1.FirstOrDefault(), serveerpath);
             
-
-
-
-
-
-
+            
         }
         private void CreateTreeFiles()
         {
@@ -507,7 +500,7 @@ namespace RevitTask
             try
             {
                 //string stringt = stringt = $"http://RVTSRV2020-2.GGP.local/RevitServerAdminRESTService/AdminRESTService.svc/{info}";
-                string stringt = stringt = $"http://rvtsrv2022.ggp.local/RevitServerAdminRESTService{app.VersionNumber}/AdminRESTService.svc/{info}";
+                string stringt  = $"http://rvtsrv2022.ggp.local/RevitServerAdminRESTService{app.VersionNumber}/AdminRESTService.svc/{info}";
 
                 WebRequest request = WebRequest.Create(stringt);
                 request.Method = "GET";
@@ -524,75 +517,88 @@ namespace RevitTask
 
             catch
             {
-                MessageBox.Show("Не получилось подключиться к серверу");
-                return null;
+               return null;
             }
-
-
-         
-
         }
        
-        private void AddContents(ServerFilesModel parentNode, string path)
+        private async void AddContents(ServerFilesModel parentNode, string path)
         {
-            XmlDictionaryReader reader = GetResponseNew(path + "/contents");
-
-            // Add the folders
-
-            while (reader.Read())
+            
+            var reader = await System.Threading.Tasks.Task.Run(() =>
             {
-                if (reader.NodeType == XmlNodeType.Element && reader.Name == "Folders")
+                return GetResponseNew(path + "/contents");
+            });
+            
+            
+            // Add the folders
+            if (reader != null)
+            {
+                
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "Folders")
                     {
-                        if (
-                          reader.NodeType == XmlNodeType.EndElement &&
-                          reader.Name == "Folders"
-                        )
-                            break;
-
-                        if (
-                          reader.NodeType == XmlNodeType.Element &&
-                          reader.Name == "Name"
-                        )
+                        while (reader.Read())
                         {
-                            reader.Read();
-                            ServerFilesModel node = new ServerFilesModel(reader.Value);
-                            parentNode.Children.Add(node);
-                            AddContents(node, path + "|" + reader.Value);
+                            if (
+                              reader.NodeType == XmlNodeType.EndElement &&
+                              reader.Name == "Folders"
+                            )
+                                break;
+
+                            if (
+                              reader.NodeType == XmlNodeType.Element &&
+                              reader.Name == "Name"
+                            )
+                            {
+                                reader.Read();
+                                ServerFilesModel node = new ServerFilesModel(reader.Value);
+                                parentNode.Children.Add(node);
+                                AddContents(node, path + "|" + reader.Value);
+                            }
                         }
                     }
-                }
-                else if (
-                  reader.NodeType == XmlNodeType.Element &&
-                  reader.Name == "Models"
-                )
-                {
-                    while (reader.Read())
+                    else if (
+                      reader.NodeType == XmlNodeType.Element &&
+                      reader.Name == "Models"
+                    )
                     {
-                        if (
-                          reader.NodeType == XmlNodeType.EndElement &&
-                          reader.Name == "Models"
-                        )
-                            break;
-
-                        if (
-                          reader.NodeType == XmlNodeType.Element &&
-                          reader.Name == "Name"
-                        )
+                        while (reader.Read())
                         {
-                            reader.Read();
-                            ServerFilesModel node = new ServerFilesModel(reader.Value);
-                            parentNode.Children.Add(node);  
-                            
+                            if (
+                              reader.NodeType == XmlNodeType.EndElement &&
+                              reader.Name == "Models"
+                            )
+                                break;
+
+                            if (
+                              reader.NodeType == XmlNodeType.Element &&
+                              reader.Name == "Name"
+                            )
+                            {
+                                reader.Read();
+                                ServerFilesModel node = new ServerFilesModel(reader.Value);
+                                parentNode.Children.Add(node);
+
+                            }
                         }
                     }
+                    
                 }
+
+                // Close the reader 
+
+                reader.Close();
+                
             }
+           
 
-            // Close the reader 
 
-            reader.Close();
+
+
+
+
         }
     }
    
